@@ -1,0 +1,6 @@
+@host = https://localhost:8000
+
+GET {{host}}/weatherforecast/
+Accept: application/json
+
+###
