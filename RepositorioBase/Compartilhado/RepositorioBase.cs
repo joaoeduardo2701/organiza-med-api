@@ -22,23 +22,25 @@ public class RepositorioBase<TEntidade> where TEntidade : EntidadeBase
         return true;
     }
 
-    public async Task<bool> InserirAsync(TEntidade registro)
+    public async Task<Guid> InserirAsync(TEntidade registro)
     {
         await registros.AddAsync(registro);
-        await context.GravarAsync();
-        return true;
+
+        return registro.Id;
     }
 
-    public async Task Editar(TEntidade registro)
+    public async Task<bool> EditarAsync(TEntidade registro)
     {
-        registros.Update(registro);
-        await context.GravarAsync();
+        var rastreador = registros.Update(registro);
+
+        return await Task.Run(() => rastreador.State == EntityState.Modified);
     }
 
-    public async Task Excluir(TEntidade registro)
+    public async Task<bool> ExcluirAsync(TEntidade registro)
     {
-        registros.Remove(registro);
-        await context.GravarAsync();
+        var rastreador = registros.Remove(registro);
+        
+        return await Task.Run(() => rastreador.State == EntityState.Deleted);
     }
 
     public virtual TEntidade SelecionarPorId(Guid id)
@@ -46,13 +48,13 @@ public class RepositorioBase<TEntidade> where TEntidade : EntidadeBase
         return registros.SingleOrDefault(x => x.Id == id);
     }
 
-    public async virtual Task<TEntidade> SelecionarPorIdAsync(Guid id)
-    {
-        return await registros.SingleOrDefaultAsync(x => x.Id == id);
-    }
-
     public async virtual Task<List<TEntidade>> SelecionarTodosAsync()
     {
         return await registros.ToListAsync();
+    }
+
+    public async virtual Task<TEntidade?> SelecionarPorIdAsync(Guid id)
+    {
+        return await registros.SingleOrDefaultAsync(x => x.Id == id);
     }
 }
