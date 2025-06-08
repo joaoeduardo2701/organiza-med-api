@@ -14,8 +14,4 @@
     <ProjectReference Include="..\EntidadeBase\OrganizaMed.Dominio.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RepositorioMedicoEmOrm\" />
-  </ItemGroup>
-
 </Project>
